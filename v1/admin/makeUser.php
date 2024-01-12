@@ -24,7 +24,7 @@ if (isset($_GET['pass'])) {
         $referral1 = generateRandomString(8);
         $result = $db->createUser($_GET['u'], $referral, $referral1 . $referral);
         if ($result == 1) {
-            echo ("User created ! uid = " . $_GET['u']);
+            echo ("DONE ✅ ! uid = " . $_GET['u']);
         } else {
             echo ("Some Error Occurred");
         }
@@ -36,6 +36,6 @@ if (isset($_GET['pass'])) {
     echo ("INVALID OPERATION");
 }
 
-echo "<br>EXECUTION DONE ✅";
+echo "<br>EXECUTION DONE";
 
 ?>
