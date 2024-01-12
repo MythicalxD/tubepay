@@ -22,14 +22,14 @@ if (isset($_GET['pass'])) {
         $referral = generateRandomString(8);
         $referral1 = generateRandomString(20);
         if ($db->isDataExists($_GET['u'])) {
+            echo ("Exists 🟡");
+        } else {
             $result = $db->createUser($_GET['u'], $referral, $referral1);
             if ($result == 1) {
                 echo ("DONE ✅ !");
             } else {
                 echo ("Some Error Occurred");
             }
-        } else {
-            echo ("Exists 🟡");
         }
 
 
