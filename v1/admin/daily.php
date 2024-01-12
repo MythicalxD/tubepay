@@ -1,5 +1,8 @@
 <?php
 
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
+
 require_once '../../includes/DbOperations.php';
 require_once '../../includes/Constants.php';
 
