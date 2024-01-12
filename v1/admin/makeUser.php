@@ -17,7 +17,7 @@ function generateRandomString($length)
 
 if (isset($_GET['pass'])) {
     if ($_GET['pass'] == ADMIN_PASS) {
-        echo ("<br>START\n");
+        echo ("START\n" . $_GET['u']);
         $db = new DbOperations();
         $referral = generateRandomString(8);
         $referral1 = generateRandomString(20);

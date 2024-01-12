@@ -22,7 +22,6 @@ class DbOperations
      {
 
           $stmt = $this->con->prepare("INSERT INTO `users` (`uid`, `referral`, `deviceID`) VALUES (?, ?, ?);");
-
           $stmt->bind_param("sss", $uid, $referral, $deviceID);
 
           if ($stmt->execute()) {
