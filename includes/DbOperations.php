@@ -146,6 +146,15 @@ class DbOperations
           return $stmt->num_rows > 0;
      }
 
+     public function isDataExists($uid)
+     {
+          $stmt = $this->con->prepare("SELECT * FROM users WHERE uid=?");
+          $stmt->bind_param("s", $uid);
+          $stmt->execute();
+          $stmt->store_result();
+          return $stmt->num_rows > 0;
+     }
+
      public function validate($hash)
      {
           $stmt = $this->con->prepare("SELECT * FROM requests WHERE reqs=?");
