@@ -157,6 +157,15 @@ class DbOperations
           return $stmt->num_rows > 0;
      }
 
+     public function checkAds20($uid)
+     {
+          $stmt = $this->con->prepare("SELECT * FROM users WHERE uid=? AND adsWatched >= 20");
+          $stmt->bind_param("s", $uid);
+          $stmt->execute();
+          $stmt->store_result();
+          return $stmt->num_rows > 0;
+     }
+
      public function validate($hash)
      {
           $stmt = $this->con->prepare("SELECT * FROM requests WHERE reqs=?");
@@ -466,7 +475,7 @@ class DbOperations
 
      public function addPointsAdd20($uid)
      {
-          $stmt = $this->con->prepare("UPDATE users SET adsWatched=adsWatched+1,tasks=?,points=points+20 WHERE uid=? AND adsWatched<=20");
+          $stmt = $this->con->prepare("UPDATE users SET adsWatched=adsWatched+1,points=points+20 WHERE uid=? AND adsWatched<=20");
           $stmt->bind_param("s", $uid);
           $stmt->execute();
           $stmt->close();
