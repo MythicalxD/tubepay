@@ -482,6 +482,7 @@ class DbOperations
 
           $stmt1 = $this->con->prepare("SELECT tasks FROM users WHERE uid = ? AND adsWatched > 19");
           $stmt1->bind_param("s", $uid);
+          $stmt1->execute();
           $stmt1->store_result();
           if ($stmt1->num_rows > 0) {
                $this->claimTask($uid, "5");
