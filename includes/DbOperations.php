@@ -220,7 +220,8 @@ class DbOperations
 
                // Update the pointsHistory in the database
                $stmt = $this->con->prepare("UPDATE users SET pointsHistory=? WHERE uid=?");
-               $stmt->bind_param("ss", json_encode($currentHistory), $uid);
+               $history = json_encode($currentHistory);
+               $stmt->bind_param("ss", $history, $uid);
                $stmt->execute();
                $stmt->close();
           } else {
@@ -272,7 +273,6 @@ class DbOperations
           $stmt->bind_param("iisi", $p, $futureYoutubeTime, $uid, $currentYoutubeTime);
 
           if ($stmt->execute()) {
-               $this->addPointsHistory($uid, $p, "Youtube", "youtube");
                $stmt->close();
                return 1;
           }
@@ -429,7 +429,6 @@ class DbOperations
           $stmt->bind_param("iisi", $p[$index], $futureSpinTime, $uid, $currentSpinTime);
 
           if ($stmt->execute()) {
-               $this->addPointsHistory($uid, $p[$index], "Spin", "spin");
                $stmt->close();
                return ['code' => 101, 'message' => $p[$index] . " Points Added!"];
           }
