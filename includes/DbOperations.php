@@ -35,6 +35,9 @@ class DbOperations
 
      public function getData($uid)
      {
+          if (!$this->isDataExists($uid)) {
+               return json_encode(['code' => 102, 'message' => 'USER NOT FOUND']);
+          }
 
           $stmt = $this->con->prepare("SELECT
           u.uid, u.points, u.referral, u.ban, u.totalReferrals, u.referredBy,
