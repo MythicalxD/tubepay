@@ -70,8 +70,6 @@ class DbOperations
                     'tasks' => [json_decode($row['tasks'])]
                ]);
 
-               $this->setRequests($uid);
-
                return json_encode($row);
           } else {
                $stmt->close();
@@ -187,16 +185,8 @@ class DbOperations
 
      public function setTime($uid, $time)
      {
-          $stmt = $this->con->prepare("UPDATE `users` SET `LastRequest` = ? WHERE UID=?");
+          $stmt = $this->con->prepare("UPDATE `users` SET `LastRequest` = ?, requests = requests + 1 WHERE uid=?");
           $stmt->bind_param("is", $time, $uid);
-          $stmt->execute();
-          $stmt->close();
-     }
-
-     public function setRequests($uid)
-     {
-          $stmt = $this->con->prepare("UPDATE `users` SET `requests` = requests + 1 WHERE UID=?");
-          $stmt->bind_param("s", $uid);
           $stmt->execute();
           $stmt->close();
      }

@@ -7,7 +7,6 @@ $response = array();
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $jsonStringEncoded = $_POST['encrypted'];
-    $id = $_GET['id'];
 
     $jsonString = decrypt($jsonStringEncoded);
 
