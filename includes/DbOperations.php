@@ -391,7 +391,8 @@ class DbOperations
                     $tasks[$id]['claimed'] = true;
 
                     $stmtUpdateUser = $conn->prepare("UPDATE users SET points=points+?, tasks=? WHERE uid=?");
-                    $stmtUpdateUser->bind_param("iss", $taskList['points'], json_encode($tasks), $uid);
+                    $tasks_up = json_encode($tasks);
+                    $stmtUpdateUser->bind_param("iss", $taskList['points'], $tasks_up, $uid);
                     $stmtUpdateUser->execute();
                     $stmtUpdateUser->close();
 
