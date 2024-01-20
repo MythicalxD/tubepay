@@ -164,6 +164,15 @@ class DbOperations
           return $stmt->num_rows > 0;
      }
 
+     public function checkpoints($uid, $value)
+     {
+          $stmt = $this->con->prepare("SELECT * FROM users WHERE uid=? AND points >= ?");
+          $stmt->bind_param("si", $uid, $value);
+          $stmt->execute();
+          $stmt->store_result();
+          return $stmt->num_rows > 0;
+     }
+
      public function validate($hash)
      {
           $stmt = $this->con->prepare("SELECT * FROM requests WHERE reqs=?");
@@ -260,6 +269,61 @@ class DbOperations
           }
      }
 
+     public function getChannels($uid)
+     {
+          $stmt = $this->con->prepare("
+          SELECT *
+          FROM subs
+          WHERE 
+              id NOT IN (
+                  SELECT DISTINCT id
+                  FROM users
+                  WHERE subs IS NOT NULL AND FIND_IN_SET(id, subs) > 0
+              )
+              OR (
+                  (SELECT COUNT(*) FROM users WHERE subs IS NOT NULL) = 0
+              );          
+         ");
+
+          if ($stmt->execute()) {
+               $result = $stmt->get_result();
+               $rows = [];
+               while ($row = $result->fetch_assoc()) {
+                    $rows[] = $row;
+               }
+               $stmt->close();
+               return json_encode($rows);
+          } else {
+               $stmt->close();
+               return NULL;
+          }
+     }
+
+     public function checkAlreadySubscribed($userId, $uid)
+     {
+          $stmt = $this->con->prepare("
+        SELECT COUNT(*) AS count
+        FROM users
+        WHERE subs IS NOT NULL AND FIND_IN_SET(?, subs) > 0 AND uid = ?
+    ");
+
+          $stmt->bind_param("is", $userId, $uid);
+
+          if ($stmt->execute()) {
+               $result = $stmt->get_result();
+               $row = $result->fetch_assoc();
+               $stmt->close();
+
+               // If count is greater than 0, the user is already subscribed
+               return $row['count'] > 0;
+          } else {
+               $stmt->close();
+               return false; // Error occurred
+          }
+     }
+
+
+
      public function setYoutubeClaim($uid)
      {
           // Execute the update query with a condition
@@ -273,6 +337,64 @@ class DbOperations
 
           if ($stmt->execute()) {
                $stmt->close();
+               return 1;
+          }
+
+          $stmt->close();
+          return 2;
+     }
+
+     public function setAddSubs($uid, $name, $link, $clicks, $reward)
+     {
+          // check for balance
+          $pointssub = $reward * $clicks;
+          if ($this->checkpoints($uid, $pointssub)) {
+               // Execute the update query with a condition
+               $stmt = $this->con->prepare("INSERT INTO `subs`( `uid`, `link`, `valid`, `reward`, `time`, `name`) VALUES (?,?,?,?,?,?)");
+               $currentTime = time();
+               $stmt->bind_param("ssiiis", $uid, $link, $clicks, $reward, $currentTime, $name);
+
+               if ($stmt->execute()) {
+                    $stmt->close();
+                    $pointssub = $reward * $clicks;
+                    $stmt1 = $this->con->prepare("UPDATE users SET points = points - ? WHERE `uid` = ?");
+                    $stmt1->bind_param("is", $pointssub, $uid);
+                    $stmt1->execute();
+                    $stmt1->close();
+                    return 1;
+               }
+
+               $stmt->close();
+               return 2;
+          } else {
+               return 3;
+          }
+
+
+     }
+
+     public function addPointsSubs($uid, $id)
+     {
+          if ($this->checkAlreadySubscribed($id, $uid)) {
+               return 3;
+          }
+          // Execute the update query with a condition
+          $stmt = $this->con->prepare("UPDATE subs SET `clicks` = clicks + 1, valid = valid - 1 WHERE `id` = ?");
+          $stmt->bind_param("s", $id);
+
+          if ($stmt->execute()) {
+               $stmt->close();
+               $updated = "," . $id;
+               $stmt1 = $this->con->prepare("UPDATE users SET points = points + (SELECT `reward` FROM `subs` WHERE `id` = ?), subs = CONCAT(subs, ?) WHERE `uid` = ?");
+               $stmt1->bind_param("sss", $id, $updated, $uid);
+               $stmt1->execute();
+               $stmt1->close();
+
+               $stmt2 = $this->con->prepare("DELETE FROM subs WHERE id = ? AND valid <= 0");
+               $stmt2->bind_param("s", $id);
+               $stmt2->execute();
+               $stmt2->close();
+
                return 1;
           }
 
