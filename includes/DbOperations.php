@@ -272,18 +272,15 @@ class DbOperations
      public function getChannels($uid)
      {
           $stmt = $this->con->prepare("
-          SELECT *
-          FROM subs
-          WHERE 
-              id NOT IN (
-                  SELECT DISTINCT id
-                  FROM users
-                  WHERE subs IS NOT NULL AND FIND_IN_SET(id, subs) > 0
-              )
-              OR (
-                  (SELECT COUNT(*) FROM users WHERE subs IS NOT NULL) = 0
-              );          
-         ");
+    SELECT *
+    FROM subs
+    WHERE id NOT IN (
+        SELECT DISTINCT id
+        FROM users
+        WHERE subs IS NOT NULL AND uid = ? AND id IN (subs)
+    )
+");
+          $stmt->bind_param("s", $uid);
 
           if ($stmt->execute()) {
                $result = $stmt->get_result();
