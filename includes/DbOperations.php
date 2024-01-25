@@ -324,7 +324,7 @@ class DbOperations
      public function setYoutubeClaim($uid)
      {
           // Execute the update query with a condition
-          $stmt = $this->con->prepare("UPDATE users SET points = points + ?, youtubeTime = ?, totalWatched = totalWatched + 1 WHERE uid = ? AND (youtubeTime IS NULL OR youtubeTime < ? OR totalWatched > 30)");
+          $stmt = $this->con->prepare("UPDATE users SET points = points + ?, youtubeTime = ?, totalWatched = totalWatched + 1, totalWatchedDaily = totalWatchedDaily + 1 WHERE uid = ? AND (youtubeTime IS NULL OR youtubeTime < ? OR totalWatched > 30)");
 
           $p = rand(20, 30);
           $currentYoutubeTime = time();
@@ -602,7 +602,7 @@ class DbOperations
 
      public function dailyReset()
      {
-          $stmt = $this->con->prepare("UPDATE users SET streak=streak+1,dailyAds=0,referralToday=0,spinCount=0,adsWatched=0, totalRequests = requests, requests=0,videoWatched=0, req = lastRequest WHERE 1;");
+          $stmt = $this->con->prepare("UPDATE users SET streak=streak+1, dailyAds=0, referralToday=0, spinCount=0, adsWatched=0, totalWatched = 0, totalRequests = requests, requests=0, videoWatched=0, req = lastRequest WHERE 1;");
           if ($stmt->execute()) {
                $stmt->close();
                $stmt1 = $this->con->prepare("UPDATE admin SET dailyReset=? WHERE id=1");
