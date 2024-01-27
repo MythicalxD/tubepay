@@ -164,6 +164,25 @@ class DbOperations
           return $stmt->num_rows > 0;
      }
 
+     public function checkCoupon($coupon)
+     {
+          $stmt = $this->con->prepare("SELECT `code` FROM `admin` WHERE `code` LIKE '%?%'");
+          $stmt->bind_param("s", $coupon);
+          $stmt->execute();
+          $stmt->store_result();
+          return $stmt->num_rows <= 0;
+     }
+
+     public function checkCouponClaim($uid, $coupon)
+     {
+          $stmt = $this->con->prepare("SELECT * FROM users WHERE uid=? AND ((SELECT * FROM users WHERE code LIKE '%?%') > 0)");
+          $stmt->bind_param("ss", $uid, $coupon);
+          $stmt->execute();
+          $stmt->store_result();
+          return $stmt->num_rows > 0;
+          // returns true if already claimed
+     }
+
      public function checkpoints($uid, $value)
      {
           $stmt = $this->con->prepare("SELECT * FROM users WHERE uid=? AND points >= ?");
@@ -272,13 +291,14 @@ class DbOperations
      public function getChannels($uid)
      {
           $stmt = $this->con->prepare("
-    SELECT *
-    FROM subs
-    WHERE id NOT IN (
-        SELECT DISTINCT id
-        FROM users
-        WHERE subs IS NOT NULL AND uid = ? AND id IN (subs)
-    )
+          SELECT *
+          FROM subs
+          WHERE subs.id NOT IN (
+              SELECT DISTINCT id
+              FROM users
+              WHERE uid = ?
+                AND FIND_IN_SET(subs.id, users.subs) > 0
+          );          
 ");
           $stmt->bind_param("s", $uid);
 
@@ -331,6 +351,32 @@ class DbOperations
           $futureYoutubeTime = time() + 30;
 
           $stmt->bind_param("iisi", $p, $futureYoutubeTime, $uid, $currentYoutubeTime);
+
+          if ($stmt->execute()) {
+               $stmt->close();
+               return 1;
+          }
+
+          $stmt->close();
+          return 2;
+     }
+
+     public function setCodeClaim($uid, $coupon)
+     {
+          // check valid coupon or not
+          if ($this->checkCoupon($coupon)) {
+               return 3;
+          }
+
+          // check coupon already claimed by user or not
+          if ($this->checkCouponClaim($uid, $coupon)) {
+               return 4;
+          }
+
+          // Execute the update query with a condition
+          $stmt = $this->con->prepare("UPDATE users SET points = points + (SELECT `rewards` FROM `admin` WHERE `code` LIKE '%?%'), CONCAT(code, ',?') WHERE uid = ?");
+
+          $stmt->bind_param("sss", $coupon, $coupon, $uid);
 
           if ($stmt->execute()) {
                $stmt->close();
