@@ -177,7 +177,7 @@ class DbOperations
 
      public function checkCouponClaim($uid, $coupon)
      {
-          $stmt = $this->con->prepare("SELECT * FROM users WHERE uid=? AND ((SELECT * FROM users WHERE code LIKE ?) > 0)");
+          $stmt = $this->con->prepare("SELECT * FROM users WHERE uid=? AND code LIKE ?");
           $likeParameter = "%$coupon%";
           $stmt->bind_param("ss", $uid, $likeParameter);
           $stmt->execute();
