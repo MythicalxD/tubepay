@@ -27,36 +27,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$time = $data['time'];
 	$version = $data['version'];
 
-	if ($fingerprint != FINGERPRINT) {
-		$response['error'] = true;
-		$response['message'] = "Fingerprint Mismatch!";
-		echo json_encode($response);
-		die();
-	}
+	// if ($fingerprint != FINGERPRINT) {
+	// 	$response['error'] = true;
+	// 	$response['message'] = "Fingerprint Mismatch!";
+	// 	echo json_encode($response);
+	// 	die();
+	// }
 
-	if ($time + 10 < time()) {
-		$response['error'] = true;
-		$response['message'] = "Request Packet Expired!";
-		echo json_encode($response);
-		die();
-	}
+	// if ($time + 10 < time()) {
+	// 	$response['error'] = true;
+	// 	$response['message'] = "Request Packet Expired!";
+	// 	echo json_encode($response);
+	// 	die();
+	// }
 
-	if ($version != VERSION) {
-		$response['error'] = true;
-		$response['message'] = "Version Mismatch!";
-		echo json_encode($response);
-		die();
-	}
+	// if ($version != VERSION) {
+	// 	$response['error'] = true;
+	// 	$response['message'] = "Version Mismatch!";
+	// 	echo json_encode($response);
+	// 	die();
+	// }
 
 	// You can safely execute anything here
 	$db = new DbOperations();
 
-	if ($db->validate($jsonStringEncoded)) {
-		$response['error'] = true;
-		$response['message'] = "Token already used!";
-		echo json_encode($response);
-		die();
-	}
+	// if ($db->validate($jsonStringEncoded)) {
+	// 	$response['error'] = true;
+	// 	$response['message'] = "Token already used!";
+	// 	echo json_encode($response);
+	// 	die();
+	// }
 
 	$result = $db->setCodeClaim($uid, $code);
 	if ($result == 1) {
