@@ -374,9 +374,9 @@ class DbOperations
           }
 
           // Execute the update query with a condition
-          $stmt = $this->con->prepare("UPDATE users SET points = points + (SELECT `rewards` FROM `admin` WHERE `code` LIKE '%?%'), CONCAT(code, ',?') WHERE uid = ?");
+          $stmt = $this->con->prepare("UPDATE users SET points = points + (SELECT coupons.reward FROM coupons WHERE coupons.code LIKE '%?%'), code = CONCAT(code,',?') WHERE uid = ? AND NOT users.code LIKE '%?%'");
 
-          $stmt->bind_param("sss", $coupon, $coupon, $uid);
+          $stmt->bind_param("ssss", $coupon, $coupon, $uid, $coupon);
 
           if ($stmt->execute()) {
                $stmt->close();
