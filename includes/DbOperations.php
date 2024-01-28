@@ -589,7 +589,7 @@ class DbOperations
      public function claimSpin($uid, $index)
      {
           // check streak claimed or not
-          $stmt = $this->con->prepare("UPDATE users SET points=points+?,spinTime=?,spinCount=spinCount+1 WHERE uid=? AND (spinTime IS NULL OR spinTime < ?)");
+          $stmt = $this->con->prepare("UPDATE users SET points=points+?,spinTime=?,spinCount=spinCount+1,spinCountDaily=spinCountDaily+1 WHERE uid=? AND (spinTime IS NULL OR spinTime < ?)");
 
           $p = array(10, 12, 15, 20, 5, 30);
           $currentSpinTime = time();
@@ -634,7 +634,7 @@ class DbOperations
 
      public function addPointsAdd20($uid)
      {
-          $stmt = $this->con->prepare("UPDATE users SET adsWatched=adsWatched+1,points=points+20 WHERE uid=? AND adsWatched<=20");
+          $stmt = $this->con->prepare("UPDATE users SET adsWatched=adsWatched+1,totalAdsWatched = totalAdsWatched + 1,points=points+20 WHERE uid=? AND adsWatched<=20");
           $stmt->bind_param("s", $uid);
           $stmt->execute();
           $stmt->close();
@@ -722,7 +722,7 @@ class DbOperations
           }
 
 
-          $stmt = $conn->prepare("UPDATE users SET points=points+50 WHERE luckyNum=?");
+          $stmt = $conn->prepare("UPDATE users SET points=points+50, luckyNumTotal = luckyNumTotal + 1 WHERE luckyNum=?");
           $stmt->bind_param("i", $luckyNumber);
           $stmt->execute();
           $stmt->close();
