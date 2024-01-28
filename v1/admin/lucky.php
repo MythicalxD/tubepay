@@ -1,22 +1,30 @@
 <?php
 
-require_once '../../includes/DbOperations.php';
-require_once '../../includes/Constants.php';
+require_once __DIR__ . '/../../includes/DbOperations.php';
+require_once __DIR__ . '/../../includes/Constants.php';
 
-if (isset($_GET['pass'])) {
-    if ($_GET['pass'] == ADMIN_PASS) {
-        echo ("Password verified!\n");
-        echo ("<br>START\n");
+function runLuckyScript($password) {
+    if ($password == ADMIN_PASS) {
+        echo "Password verified!\n";
+        echo "START\n";
+
         $db = new DbOperations();
         $result = $db->luckyNumber();
-        echo ("<br>Lucky Draw picked :  " . $result);
+        echo "Lucky Draw picked: $result\n";
     } else {
-        echo ("wrong Password\n");
+        echo "Wrong Password\n";
     }
-} else {
-    echo ("INVALID OPERATION");
+
+    echo "EXECUTION DONE ✅\n";
 }
 
-echo "<br>EXECUTION DONE ✅";
-
-?>
+// Check if the script is run from the command line
+if (php_sapi_name() === 'cli') {
+    if (isset($argv[1])) {
+        runLuckyScript($argv[1]);
+    } else {
+        echo "Please provide a password as a command-line argument.\n";
+    }
+} else {
+    echo "This script should be run from the command line.\n";
+}
