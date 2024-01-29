@@ -18,13 +18,13 @@ function runLuckyScript($password) {
     echo "EXECUTION DONE ✅\n";
 }
 
-// Check if the script is run from the command line
-if (php_sapi_name() === 'cli') {
-    if (isset($argv[1])) {
-        runLuckyScript($argv[1]);
-    } else {
-        echo "Please provide a password as a command-line argument.\n";
-    }
-} else {
-    echo "This script should be run from the command line.\n";
-}
+// // Check if the script is run from the command line
+// if (php_sapi_name() === 'cli') {
+//     if (isset($argv[1])) {
+//         runLuckyScript($argv[1]);
+//     } else {
+//         echo "Please provide a password as a command-line argument.\n";
+//     }
+// } else {
+//     echo "This script should be run from the command line.\n";
+// }

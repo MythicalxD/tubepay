@@ -3,7 +3,7 @@
 define('DB_NAME', 'tubepay');
 define('DB_USER', 'admin');
 define('DB_PASSWORD', 'KachreKaDibba@1001');
-define('DB_HOST', '65.1.167.26');
+define('DB_HOST', 'localhost');
 
 define('FINGERPRINT', 'DCACB2BC869E65835C35B31B6E10533D3CA0BCC3');
 define('VERSION', '2');
