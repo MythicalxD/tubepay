@@ -652,7 +652,7 @@ class DbOperations
 
      public function dailyReset()
      {
-          $stmt = $this->con->prepare("UPDATE users SET streak=streak+1, dailyAds=0, referralToday=0, spinCount=0, adsWatched=0, totalWatched = 0, totalRequests = requests, requests=0, videoWatched=0, req = lastRequest WHERE 1;");
+          $stmt = $this->con->prepare("UPDATE users SET streak=streak+1, dailyAds=0, referralToday=0, spinCount=0, adsWatched=0, totalWatched = 0, totalRequests = totalRequests + requests, requests=0, videoWatched=0, req = lastRequest WHERE 1;");
           if ($stmt->execute()) {
                $stmt->close();
                $stmt1 = $this->con->prepare("UPDATE admin SET dailyReset=? WHERE id=1");
