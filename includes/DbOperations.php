@@ -166,14 +166,14 @@ class DbOperations
 
      public function checkCoupon($coupon)
      {
-         $stmt = $this->con->prepare("SELECT `code` FROM `admin` WHERE `code` LIKE ?");
-         $likeParameter = "%$coupon%";
-         $stmt->bind_param("s", $likeParameter);
-         $stmt->execute();
-         $stmt->store_result();
-         return $stmt->num_rows <= 0;
+          $stmt = $this->con->prepare("SELECT `code` FROM `admin` WHERE `code` LIKE ?");
+          $likeParameter = "%$coupon%";
+          $stmt->bind_param("s", $likeParameter);
+          $stmt->execute();
+          $stmt->store_result();
+          return $stmt->num_rows <= 0;
      }
-     
+
 
      public function checkCouponClaim($uid, $coupon)
      {
@@ -376,11 +376,12 @@ class DbOperations
                return 4;
           }
 
-          // Execute the update query with a condition
-          $stmt = $this->con->prepare("UPDATE users SET points = points + (SELECT coupons.reward FROM coupons WHERE coupons.code LIKE ?), code = CONCAT(code,',?') WHERE uid = ? AND NOT users.code LIKE ?");
+          // Revised SQL query
+          $stmt = $this->con->prepare("UPDATE users AS u JOIN coupons AS c ON c.code LIKE ? SET u.points = u.points + c.reward, u.code = CONCAT(u.code, ?) WHERE u.uid = ? AND u.code NOT LIKE ?");
 
           $likeParameter = "%$coupon%";
-          $stmt->bind_param("ssss", $likeParameter, $coupon, $uid, $likeParameter);
+          $commaParam = ",$coupon";
+          $stmt->bind_param("ssss", $likeParameter, $commaParam, $uid, $likeParameter);
 
           if ($stmt->execute()) {
                $stmt->close();
