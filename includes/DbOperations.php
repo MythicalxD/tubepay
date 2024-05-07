@@ -711,31 +711,16 @@ class DbOperations
      {
           $conn = $this->con;
 
-          $stmtUser = $conn->prepare("SELECT luckyNum, COUNT(luckyNum) AS occurrence FROM users GROUP BY luckyNum ORDER BY occurrence LIMIT 1;");
-          $stmtUser->execute();
-          $resultUser = $stmtUser->get_result();
-          $user = $resultUser->fetch_assoc();
-          $stmtUser->close();
+          $luckyNumber = mt_rand(1, 9); // Adjust the range as needed
 
-          $luckyNumber = $user['luckyNum'];
-          if ($luckyNumber == 0) {
-               $luckyNumber = mt_rand(1, 9); // Adjust the range as needed
-          }
-
-
-          $stmt = $conn->prepare("UPDATE users SET points=points+50, luckyNumTotal = luckyNumTotal + 1 WHERE luckyNum=?");
+          $stmt = $conn->prepare("UPDATE users SET points=points+500, luckyNumTotal = luckyNumTotal + 1 WHERE luckyNum=?");
           $stmt->bind_param("i", $luckyNumber);
           $stmt->execute();
           $stmt->close();
 
           $t = time();
 
-          $stmt = $conn->prepare("UPDATE users SET luckyNum=0 WHERE 1;");
-          $stmt->execute();
-          $stmt->close();
-
-          $stmt = $conn->prepare("UPDATE admin SET luckyNumber=?,number=? WHERE id = 1");
-          $stmt->bind_param("ii", $t, $luckyNumber);
+          $stmt = $conn->prepare("UPDATE users SET luckyNum=0 WHERE luckyNum != 0;");
           $stmt->execute();
           $stmt->close();
 
