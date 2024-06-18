@@ -409,9 +409,15 @@ class DbOperations
                     $stmt1->bind_param("is", $pointssub, $uid);
                     $stmt1->execute();
                     $stmt1->close();
+
+                    // add revenue to admin panel
+                    $stmt2 = $this->con->prepare("UPDATE admin SET revenue_subs = revenue_subs + ? WHERE 1");
+                    $stmt2->bind_param("i", $pointssub);
+                    $stmt2->execute();
+                    $stmt2->close();
+
                     return 1;
                }
-
                $stmt->close();
                return 2;
           } else {
