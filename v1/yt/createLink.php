@@ -1,9 +1,5 @@
 <?php
 
-error_reporting(E_ALL);
-ini_set('display_errors', '1');
-
-
 require_once '../../includes/DbOperations.php';
 require_once '../../includes/decode.php';
 $response = array();
@@ -28,7 +24,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $fingerprint = $data['fingerprint'];
     $uid = $data['uid'];
     $time = $data['time'];
-    $id = $data['id'];
+    $name = $data['name'];
+    $reward = $data['reward'];
+    $clicks = $data['clicks'];
+    $link = $data['link'];
     $version = $data['version'];
 
     if ($fingerprint != FINGERPRINT) {
@@ -62,12 +61,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         die();
     }
 
-    $result = $db->addPointsSubs($uid, $id);
+    $result = $db->setAddSubs($uid, $name, $link, $clicks, $reward);
     if ($result == 1) {
-        $response['message'] = "Reward Claimed Successfully";
+        $response['message'] = "Subscription Task added successfully";
         $response['Code'] = "101";
-    } else if ($result == 3) {
-        $response['message'] = "Already Subscribed!";
+    } else if($result == 3) {
+        $response['message'] = "Insufficient Balance!";
         $response['Code'] = "103";
     } else {
         $response['message'] = "Some Error Occurred Please try again";

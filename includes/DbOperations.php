@@ -788,12 +788,21 @@ class DbOperations
           if ($this->checkPayout($uid, $amount * 50000)) {
                if ($this->checkPayoutLock($uid, $amount, $method) == 1) {
 
-                    $insertStatement = "INSERT INTO payout (method, amt, email, country, uid, date) VALUES (?, ?, ?, ?, ?, ?)";
-                    $stmt = $this->con->prepare($insertStatement);
-                    $date = date("d-m-y", time());
-                    $stmt->bind_param("ssssss", $method, $amount, $email, $country, $uid, $date);
-                    $stmt->execute();
-                    $stmt->close();
+                    if ($country == "India") {
+                         $insertStatement = "INSERT INTO payoutIn (method, amt, email, country, uid, date) VALUES (?, ?, ?, ?, ?, ?)";
+                         $stmt = $this->con->prepare($insertStatement);
+                         $date = date("d-m-y", time());
+                         $stmt->bind_param("ssssss", $method, $amount, $email, $country, $uid, $date);
+                         $stmt->execute();
+                         $stmt->close();
+                    } else {
+                         $insertStatement = "INSERT INTO payout (method, amt, email, country, uid, date) VALUES (?, ?, ?, ?, ?, ?)";
+                         $stmt = $this->con->prepare($insertStatement);
+                         $date = date("d-m-y", time());
+                         $stmt->bind_param("ssssss", $method, $amount, $email, $country, $uid, $date);
+                         $stmt->execute();
+                         $stmt->close();
+                    }
 
                     $updateStatement = "UPDATE users SET points=points-?, payoutLock=1 WHERE uid=?";
                     $stmt = $this->con->prepare($updateStatement);
