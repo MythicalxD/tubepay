@@ -776,7 +776,7 @@ class DbOperations
 
      public function checkPayoutLock($uid, $amount, $method)
      {
-          if ((float) $amount > 0.6) {
+          if ($amount != "0.12" || $amount != "0.04") {
                return 2;
           }
 
