@@ -822,10 +822,14 @@ class DbOperations
                          $stmt->close();
                     }
 
-                    $updateStatement = "UPDATE users SET points=points-?, payoutLock=1 WHERE uid=?";
+                    $updateStatement = "UPDATE users SET points=points-?, payoutLock=? WHERE uid=?";
                     $stmt = $this->con->prepare($updateStatement);
                     $amt = $amount * 50000;
-                    $stmt->bind_param("is", $amt, $uid);
+                    $lock = 0;
+                    if($amount > 0.6){
+                         $lock = 1;
+                    }
+                    $stmt->bind_param("iis", $amt, $lock, $uid);
                     $stmt->execute();
                     $stmt->close();
 
