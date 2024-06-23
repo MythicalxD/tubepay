@@ -899,54 +899,99 @@ class DbOperations
 
      public function setAddSubsYt($uid, $name, $link, $clicks, $reward, $duration)
      {
-         // Check for validity of duration
-         if ($duration > 3600 || $duration < 10) {
-             return 3;
-         }
-     
-         // Calculate the cost based on clicks
-         $clickCost = $reward * $clicks;
-     
-         // Calculate the additional cost for video duration
-         $durationCost = 0;
-         if ($duration > 30) {
-             $additionalDuration = $duration - 30;
-             $durationCost = ceil($additionalDuration / 10) * 100;
-         }
-     
-         // Total points to be subtracted
-         $totalCost = $clickCost + $durationCost;
-     
-         // Check if the user has enough points
-         if ($this->checkpoints($uid, $totalCost)) {
-             // Execute the insert query
-             $stmt = $this->con->prepare("INSERT INTO `yt`( `uid`, `link`, `valid`, `reward`, `time`, `name`, `duration`) VALUES (?, ?, ?, ?, ?, ?, ?)");
-             $currentTime = time();
-             $stmt->bind_param("ssiiisi", $uid, $link, $clicks, $reward, $currentTime, $name, $duration);
-     
-             if ($stmt->execute()) {
-                 $stmt->close();
-     
-                 // Subtract points from the user's account
-                 $stmt1 = $this->con->prepare("UPDATE users SET points = points - ? WHERE `uid` = ?");
-                 $stmt1->bind_param("is", $totalCost, $uid);
-                 $stmt1->execute();
-                 $stmt1->close();
-     
-                 // Add revenue to admin panel
-                 $stmt2 = $this->con->prepare("UPDATE admin SET revenue_yt = revenue_yt + ? WHERE 1");
-                 $stmt2->bind_param("i", $totalCost);
-                 $stmt2->execute();
-                 $stmt2->close();
-     
-                 return 1;
-             } else {
-                 $stmt->close();
-                 return 2;
-             }
-         } else {
-             return 3;
-         }
+          // Check for validity of duration
+          if ($duration > 3600 || $duration < 10) {
+               return 3;
+          }
+
+          // Calculate the cost based on clicks
+          $clickCost = $reward * $clicks;
+
+          // Calculate the additional cost for video duration
+          $durationCost = 0;
+          if ($duration > 30) {
+               $additionalDuration = $duration - 30;
+               $durationCost = ceil($additionalDuration / 10) * 100;
+          }
+
+          // Total points to be subtracted
+          $totalCost = $clickCost + $durationCost;
+
+          // Check if the user has enough points
+          if ($this->checkpoints($uid, $totalCost)) {
+               // Execute the insert query
+               $stmt = $this->con->prepare("INSERT INTO `yt`( `uid`, `link`, `valid`, `reward`, `time`, `name`, `duration`) VALUES (?, ?, ?, ?, ?, ?, ?)");
+               $currentTime = time();
+               $stmt->bind_param("ssiiisi", $uid, $link, $clicks, $reward, $currentTime, $name, $duration);
+
+               if ($stmt->execute()) {
+                    $stmt->close();
+
+                    // Subtract points from the user's account
+                    $stmt1 = $this->con->prepare("UPDATE users SET points = points - ? WHERE `uid` = ?");
+                    $stmt1->bind_param("is", $totalCost, $uid);
+                    $stmt1->execute();
+                    $stmt1->close();
+
+                    // Add revenue to admin panel
+                    $stmt2 = $this->con->prepare("UPDATE admin SET revenue_yt = revenue_yt + ? WHERE 1");
+                    $stmt2->bind_param("i", $totalCost);
+                    $stmt2->execute();
+                    $stmt2->close();
+
+                    return 1;
+               } else {
+                    $stmt->close();
+                    return 2;
+               }
+          } else {
+               return 3;
+          }
      }
-     
+
+     public function countWatched($uid)
+     {
+          // Fetch the user's data from the database
+          $stmt = $this->con->prepare("SELECT yt FROM users WHERE uid = ?");
+          $stmt->bind_param("s", $uid);
+          $stmt->execute();
+          $stmt->bind_result($yt);
+          $stmt->fetch();
+          $stmt->close();
+
+          // Check if the yt field is not empty
+          if (!empty($yt)) {
+               // Convert the CSV string to an array
+               $ytArray = explode(',', $yt);
+
+               // Return the count of videos watched
+               return (count($ytArray) - 1);
+          } else {
+               // Return 0 if the yt field is empty
+               return 0;
+          }
+     }
+
+     public function countAvailableVideos()
+     {
+          // Prepare the SQL statement to count the number of rows in the yt table
+          $stmt = $this->con->prepare("SELECT COUNT(*) FROM yt");
+
+          // Execute the statement
+          $stmt->execute();
+
+          // Bind the result to a variable
+          $stmt->bind_result($count);
+
+          // Fetch the result
+          $stmt->fetch();
+
+          // Close the statement
+          $stmt->close();
+
+          // Return the count
+          return $count;
+     }
+
+
 }
