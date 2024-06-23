@@ -785,6 +785,9 @@ class DbOperations
                if ($method == "PayPal" && $amount == "0.04") {
                     return 2;
                }
+               if ($amount > 0.6) {
+                    return 2;
+               }
           } else {
                return 1;
           }
