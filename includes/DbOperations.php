@@ -776,6 +776,10 @@ class DbOperations
 
      public function checkPayoutLock($uid, $amount, $method)
      {
+          if ((float) $amount > 0.6) {
+               return 2;
+          }
+
           $stmt = $this->con->prepare("SELECT `points` FROM users WHERE payoutLock = 1 AND `UID` = ?");
           $stmt->bind_param("s", $uid);
           $stmt->execute();
@@ -783,9 +787,6 @@ class DbOperations
           if ($stmt->num_rows > 0) {
                // payout lock is true
                if ($method == "PayPal" && $amount == "0.04") {
-                    return 2;
-               }
-               if ((float)$amount > 0.6) {
                     return 2;
                }
           } else {
@@ -829,7 +830,7 @@ class DbOperations
                     $stmt = $this->con->prepare($updateStatement);
                     $amt = $amount * 50000;
                     $lock = 0;
-                    if($amount > 0.6){
+                    if ($amount > 0.6) {
                          $lock = 1;
                     }
                     $stmt->bind_param("iis", $amt, $lock, $uid);
