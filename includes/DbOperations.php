@@ -301,8 +301,7 @@ class DbOperations
               FROM users
               WHERE uid = ?
                 AND FIND_IN_SET(subs.id, users.subs) > 0
-          );          
-");
+          );");
           $stmt->bind_param("s", $uid);
 
           if ($stmt->execute()) {
@@ -342,6 +341,28 @@ class DbOperations
           }
      }
 
+     public function checkAlreadySubscribedYt($userId, $uid)
+     {
+          $stmt = $this->con->prepare("
+        SELECT COUNT(*) AS count
+        FROM users
+        WHERE yt IS NOT NULL AND FIND_IN_SET(?, yt) > 0 AND uid = ?
+    ");
+
+          $stmt->bind_param("is", $userId, $uid);
+
+          if ($stmt->execute()) {
+               $result = $stmt->get_result();
+               $row = $result->fetch_assoc();
+               $stmt->close();
+
+               // If count is greater than 0, the user is already subscribed
+               return $row['count'] > 0;
+          } else {
+               $stmt->close();
+               return false; // Error occurred
+          }
+     }
 
 
      public function setYoutubeClaim($uid)
@@ -819,5 +840,63 @@ class DbOperations
           } else {
                return ['code' => 102, 'message' => 'INSUFFICIENT BALANCE'];
           }
+     }
+
+     // YT
+
+     public function getyt($uid)
+     {
+          $stmt = $this->con->prepare("
+          SELECT *
+          FROM yt
+          WHERE yt.id NOT IN (
+              SELECT DISTINCT id
+              FROM users
+              WHERE uid = ?
+                AND FIND_IN_SET(yt.id, users.yt) > 0
+          );");
+          $stmt->bind_param("s", $uid);
+
+          if ($stmt->execute()) {
+               $result = $stmt->get_result();
+               $rows = [];
+               while ($row = $result->fetch_assoc()) {
+                    $rows[] = $row;
+               }
+               $stmt->close();
+               return json_encode($rows);
+          } else {
+               $stmt->close();
+               return NULL;
+          }
+     }
+
+     public function addPointsYt($uid, $id)
+     {
+          if ($this->checkAlreadySubscribedYt($id, $uid)) {
+               return 3;
+          }
+          // Execute the update query with a condition
+          $stmt = $this->con->prepare("UPDATE yt SET `clicks` = clicks + 1, valid = valid - 1 WHERE `id` = ?");
+          $stmt->bind_param("s", $id);
+
+          if ($stmt->execute()) {
+               $stmt->close();
+               $updated = "," . $id;
+               $stmt1 = $this->con->prepare("UPDATE users SET points = points + (SELECT `reward` FROM `yt` WHERE `id` = ?), yt = CONCAT(yt, ?) WHERE `uid` = ?");
+               $stmt1->bind_param("sss", $id, $updated, $uid);
+               $stmt1->execute();
+               $stmt1->close();
+
+               $stmt2 = $this->con->prepare("DELETE FROM yt WHERE id = ? AND valid <= 0");
+               $stmt2->bind_param("s", $id);
+               $stmt2->execute();
+               $stmt2->close();
+
+               return 1;
+          }
+
+          $stmt->close();
+          return 2;
      }
 }

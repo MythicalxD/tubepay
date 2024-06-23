@@ -6,7 +6,7 @@ $response = array();
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
     $db = new DbOperations();
-    $result = $db->getChannels($_GET['uid']);
+    $result = $db->getyt($_GET['uid']);
     echo $result;
 
 } else {

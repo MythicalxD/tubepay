@@ -62,12 +62,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         die();
     }
 
-    $result = $db->addPointsSubs($uid, $id);
+    $result = $db->addPointsYt($uid, $id);
     if ($result == 1) {
         $response['message'] = "Reward Claimed Successfully";
         $response['Code'] = "101";
     } else if ($result == 3) {
-        $response['message'] = "Already Subscribed!";
+        $response['message'] = "Already Watched!";
         $response['Code'] = "103";
     } else {
         $response['message'] = "Some Error Occurred Please try again";
