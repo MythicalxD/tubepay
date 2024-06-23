@@ -786,10 +786,6 @@ class DbOperations
           $stmt->store_result();
           if ($stmt->num_rows > 0) {
                // payout lock is true
-               if ($method == "PayPal" && $amount == "0.04") {
-                    return 2;
-               }
-          } else {
                return 1;
           }
      }
@@ -808,39 +804,39 @@ class DbOperations
      public function payout($method, $amount, $email, $country, $uid)
      {
           if ($this->checkPayout($uid, $amount * 50000)) {
+
                if ($this->checkPayoutLock($uid, $amount, $method) == 1) {
-
-                    if ($country == "India") {
-                         $insertStatement = "INSERT INTO payoutIn (method, amt, email, country, uid, date) VALUES (?, ?, ?, ?, ?, ?)";
-                         $stmt = $this->con->prepare($insertStatement);
-                         $date = date("d-m-y", time());
-                         $stmt->bind_param("ssssss", $method, $amount, $email, $country, $uid, $date);
-                         $stmt->execute();
-                         $stmt->close();
-                    } else {
-                         $insertStatement = "INSERT INTO payout (method, amt, email, country, uid, date) VALUES (?, ?, ?, ?, ?, ?)";
-                         $stmt = $this->con->prepare($insertStatement);
-                         $date = date("d-m-y", time());
-                         $stmt->bind_param("ssssss", $method, $amount, $email, $country, $uid, $date);
-                         $stmt->execute();
-                         $stmt->close();
-                    }
-
-                    $updateStatement = "UPDATE users SET points=points-?, payoutLock=? WHERE uid=?";
-                    $stmt = $this->con->prepare($updateStatement);
-                    $amt = $amount * 50000;
-                    $lock = 0;
-                    if ($amount > 0.6) {
-                         $lock = 1;
-                    }
-                    $stmt->bind_param("iis", $amt, $lock, $uid);
-                    $stmt->execute();
-                    $stmt->close();
-
-                    return ['code' => 101, 'message' => 'PAYOUT SUCCESSFUL ✅'];
-               } else {
                     return ['code' => 103, 'message' => 'PLEASE WAIT A FEW DAYS BEFORE SENDING THIS AMOUNT AGAIN'];
                }
+
+               if ($country == "India") {
+                    $insertStatement = "INSERT INTO payoutIn (method, amt, email, country, uid, date) VALUES (?, ?, ?, ?, ?, ?)";
+                    $stmt = $this->con->prepare($insertStatement);
+                    $date = date("d-m-y", time());
+                    $stmt->bind_param("ssssss", $method, $amount, $email, $country, $uid, $date);
+                    $stmt->execute();
+                    $stmt->close();
+               } else {
+                    $insertStatement = "INSERT INTO payout (method, amt, email, country, uid, date) VALUES (?, ?, ?, ?, ?, ?)";
+                    $stmt = $this->con->prepare($insertStatement);
+                    $date = date("d-m-y", time());
+                    $stmt->bind_param("ssssss", $method, $amount, $email, $country, $uid, $date);
+                    $stmt->execute();
+                    $stmt->close();
+               }
+
+               $updateStatement = "UPDATE users SET points=points-?, payoutLock=? WHERE uid=?";
+               $stmt = $this->con->prepare($updateStatement);
+               $amt = $amount * 50000;
+               $lock = 0;
+               if ($amount > 0.6) {
+                    $lock = 1;
+               }
+               $stmt->bind_param("iis", $amt, $lock, $uid);
+               $stmt->execute();
+               $stmt->close();
+
+               return ['code' => 101, 'message' => 'PAYOUT SUCCESSFUL ✅'];
 
           } else {
                return ['code' => 102, 'message' => 'INSUFFICIENT BALANCE'];
