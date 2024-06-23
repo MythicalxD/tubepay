@@ -972,10 +972,32 @@ class DbOperations
           }
      }
 
-     public function countAvailableVideos()
+     public function countAvailableVideos($uid)
      {
-          // Prepare the SQL statement to count the number of rows in the yt table
-          $stmt = $this->con->prepare("SELECT COUNT(*) FROM yt");
+          // Fetch the user's watched videos from the users table
+          $stmtUser = $this->con->prepare("SELECT yt FROM users WHERE uid = ?");
+          $stmtUser->bind_param("s", $uid);
+          $stmtUser->execute();
+          $stmtUser->bind_result($ytCsv);
+          $stmtUser->fetch();
+          $stmtUser->close();
+
+          // Convert the CSV string to an array
+          $watchedVideos = array();
+          if (!empty($ytCsv)) {
+               $watchedVideos = explode(',', $ytCsv);
+          }
+
+          // Convert the array to a comma-separated string for SQL query
+          $watchedVideosPlaceholder = "'" . implode("','", $watchedVideos) . "'";
+
+          // Prepare the SQL statement to count the number of rows in the yt table excluding watched videos
+          $sql = "SELECT COUNT(*) FROM yt";
+          if (!empty($watchedVideos)) {
+               $sql .= " WHERE id NOT IN ($watchedVideosPlaceholder)";
+          }
+
+          $stmt = $this->con->prepare($sql);
 
           // Execute the statement
           $stmt->execute();
@@ -992,6 +1014,5 @@ class DbOperations
           // Return the count
           return $count;
      }
-
 
 }

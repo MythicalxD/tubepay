@@ -6,7 +6,7 @@ $response = array();
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
     $db = new DbOperations();
-    $result = $db->countAvailableVideos();
+    $result = $db->countAvailableVideos($_GET['uid']);
     echo $result;
 
 } else {
