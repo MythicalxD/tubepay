@@ -28,6 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $reward = $data['reward'];
     $clicks = $data['clicks'];
     $link = $data['link'];
+    $duration = $data['duration'];
     $version = $data['version'];
 
     if ($fingerprint != FINGERPRINT) {
@@ -61,11 +62,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         die();
     }
 
-    $result = $db->setAddSubs($uid, $name, $link, $clicks, $reward);
+    $result = $db->setAddSubsYt($uid, $name, $link, $clicks, $reward, $duration);
     if ($result == 1) {
-        $response['message'] = "Subscription Task added successfully";
+        $response['message'] = "Watch Task added successfully";
         $response['Code'] = "101";
-    } else if($result == 3) {
+    } else if ($result == 3) {
         $response['message'] = "Insufficient Balance!";
         $response['Code'] = "103";
     } else {
