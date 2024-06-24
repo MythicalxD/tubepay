@@ -40,21 +40,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $response['error'] = true;
         $response['message'] = "Fingerprint Mismatch!";
         echo json_encode($response);
-        // die();
+        die();
     }
 
     if ($time + 10 < time()) {
         $response['error'] = true;
         $response['message'] = "Request Packet Expired!";
         echo json_encode($response);
-        // die();
+        die();
     }
 
     if ($version != VERSION) {
         $response['error'] = true;
         $response['message'] = "Version Mismatch!";
         echo json_encode($response);
-        // die();
+        die();
     }
 
     // You can safely execute anything here

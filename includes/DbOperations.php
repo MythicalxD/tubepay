@@ -828,8 +828,12 @@ class DbOperations
                $updateStatement = "UPDATE users SET points=points-?, payoutLock=? WHERE uid=?";
                $stmt = $this->con->prepare($updateStatement);
                $amt = $amount * 50000;
+               
                $lock = 0;
-               if ($amount > 0.6) {
+               if ($amount == "0.12") {
+                    $lock = 1;
+               }
+               if ($amount == "0.04") {
                     $lock = 1;
                }
                $stmt->bind_param("iis", $amt, $lock, $uid);
