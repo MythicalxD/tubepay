@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $duration = $data['duration'];
     $version = $data['version'];
 
-    echo ($fingerprint);
+    echo ($fingerprint + ',' + $uid + ',' + $time + ',' + $name + ',' + $reward + ',' + $clicks + ',' + $link + ',' + $duration + ',' + $version);
     echo ($uid);
     echo ($time);
     echo ($name);
