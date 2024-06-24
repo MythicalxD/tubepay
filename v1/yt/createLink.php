@@ -1,12 +1,14 @@
 <?php
 
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
+
+
 require_once '../../includes/DbOperations.php';
 require_once '../../includes/decode.php';
 $response = array();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
-    echo ("hue123");
 
     $jsonStringEncoded = $_POST['encrypted'];
 
@@ -32,8 +34,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $link = $data['link'];
     $duration = $data['duration'];
     $version = $data['version'];
-
-    echo ($uid + ',' + $time + ',' + $name + ',');
 
 
     if ($fingerprint != FINGERPRINT) {
