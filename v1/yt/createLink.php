@@ -33,6 +33,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $duration = $data['duration'];
     $version = $data['version'];
 
+    echo ($fingerprint);
+    echo ($uid);
+    echo ($time);
+    echo ($name);
+    echo ($reward);
+    echo ($clicks);
+    echo ($link);
+    echo ($duration);
+    echo ($version);
+
     if ($fingerprint != FINGERPRINT) {
         $response['error'] = true;
         $response['message'] = "Fingerprint Mismatch!";
