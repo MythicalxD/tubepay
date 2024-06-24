@@ -922,7 +922,7 @@ class DbOperations
           $stmt->bind_param("s", $uid);
           $stmt->execute();
           $stmt->store_result();
-          return $stmt->num_rows > 3;
+          return $stmt->num_rows > 2;
           // returns true if already claimed
      }
 
