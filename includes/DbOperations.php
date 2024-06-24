@@ -942,16 +942,15 @@ class DbOperations
                     $stmt2->execute();
                     $stmt2->close();
 
-                    return ['status' => 1, 'new_reward' => $new_reward];
+                    return 1;
                } else {
                     $stmt->close();
-                    return ['status' => 2];
+                    return 2;
                }
           } else {
-               return ['status' => 3];
+               return 3;
           }
      }
-
 
      public function countWatched($uid)
      {
