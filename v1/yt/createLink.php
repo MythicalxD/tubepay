@@ -33,15 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $duration = $data['duration'];
     $version = $data['version'];
 
-    echo ($fingerprint + ',' + $uid + ',' + $time + ',' + $name + ',' + $reward + ',' + $clicks + ',' + $link + ',' + $duration + ',' + $version);
-    echo ($uid);
-    echo ($time);
-    echo ($name);
-    echo ($reward);
-    echo ($clicks);
-    echo ($link);
-    echo ($duration);
-    echo ($version);
+    echo ($uid + ',' + $time + ',' + $name + ',');
+
 
     if ($fingerprint != FINGERPRINT) {
         $response['error'] = true;
