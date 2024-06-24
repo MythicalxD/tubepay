@@ -901,8 +901,38 @@ class DbOperations
           return 2;
      }
 
+     public function checkSpamYt($link)
+     {
+          $stmt = $this->con->prepare("SELECT * FROM yt WHERE link LIKE ?");
+          $likeParameter = "%$link%";
+          $stmt->bind_param("s", $likeParameter);
+          $stmt->execute();
+          $stmt->store_result();
+          return $stmt->num_rows > 0;
+          // returns true if already claimed
+     }
+
+     public function checkMaxYt($uid)
+     {
+          $stmt = $this->con->prepare("SELECT * FROM yt WHERE uid = ?");
+          $stmt->bind_param("s", $uid);
+          $stmt->execute();
+          $stmt->store_result();
+          return $stmt->num_rows > 2;
+          // returns true if already claimed
+     }
+
      public function setAddSubsYt($uid, $name, $link, $clicks, $reward, $duration)
      {
+          // check spam 
+          if ($this->checkSpamYt($link)) {
+               return 4;
+          }
+          // check max 2
+          if ($this->checkMaxYt($uid)) {
+               return 5;
+          }
+
           // Calculate the click cost
           $clickCost = $reward * $clicks;
 

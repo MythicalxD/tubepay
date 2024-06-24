@@ -74,6 +74,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else if ($result == 3) {
         $response['message'] = "Insufficient Balance!";
         $response['Code'] = "103";
+    } else if ($result == 4) {
+        $response['message'] = "Video Already Uploaded";
+        $response['Code'] = "103";
+    } else if ($result == 5) {
+        $response['message'] = "You have reached your daily limit";
+        $response['Code'] = "103";
     } else {
         $response['message'] = "Some Error Occurred Please try again";
         $response['Code'] = "102";
