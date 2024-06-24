@@ -920,12 +920,14 @@ class DbOperations
           $new_reward = ($durationCost / $clicks);
           $new_reward = round($new_reward / 2) + $reward;
 
+          $v = 1;
+
           // Check if the user has enough points
           if ($this->checkpoints($uid, $totalCost)) {
                // Execute the insert query
                $stmt = $this->con->prepare("INSERT INTO `yt`( `uid`, `link`, `valid`, `reward`, `time`, `name`, `duration`) VALUES (?, ?, ?, ?, ?, ?, ?)");
                $currentTime = time();
-               $stmt->bind_param("ssiiisi", $uid, $link, 1, $new_reward, $currentTime, $name, $duration);
+               $stmt->bind_param("ssiiisi", $uid, $link, $clicks, $new_reward, $currentTime, $name, $duration);
 
                if ($stmt->execute()) {
                     $stmt->close();
