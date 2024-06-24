@@ -903,15 +903,10 @@ class DbOperations
 
      public function setAddSubsYt($uid, $name, $link, $clicks, $reward, $duration)
      {
-          // Check for validity of duration
-          if ($duration > 3600 || $duration < 10) {
-               return 3;
-          }
-
-          // Calculate the cost based on clicks
+          // Calculate the click cost
           $clickCost = $reward * $clicks;
 
-          // Calculate the additional cost for video duration
+          // Calculate the additional duration cost
           $durationCost = 0;
           if ($duration > 30) {
                $additionalDuration = $duration - 30;
@@ -919,20 +914,24 @@ class DbOperations
           }
 
           // Total points to be subtracted
-          $totalCost = $clickCost + $durationCost;
+          $totalCost = $clickCost + $durationCost + 200;
+
+          // Calculate new reward based on Flutter logic
+          $new_reward = ($durationCost / $clicks);
+          $new_reward = round($new_reward / 2) + $reward;
 
           // Check if the user has enough points
           if ($this->checkpoints($uid, $totalCost)) {
                // Execute the insert query
                $stmt = $this->con->prepare("INSERT INTO `yt`( `uid`, `link`, `valid`, `reward`, `time`, `name`, `duration`) VALUES (?, ?, ?, ?, ?, ?, ?)");
                $currentTime = time();
-               $stmt->bind_param("ssiiisi", $uid, $link, $clicks, $reward, $currentTime, $name, $duration);
+               $stmt->bind_param("ssiiisi", $uid, $link, 1, $new_reward, $currentTime, $name, $duration);
 
                if ($stmt->execute()) {
                     $stmt->close();
 
                     // Subtract points from the user's account
-                    $stmt1 = $this->con->prepare("UPDATE users SET points = points - ? WHERE `uid` = ?");
+                    $stmt1 = $this->con->prepare("UPDATE users SET points = points - ?, promo = promo + 1 WHERE `uid` = ?");
                     $stmt1->bind_param("is", $totalCost, $uid);
                     $stmt1->execute();
                     $stmt1->close();
@@ -943,15 +942,16 @@ class DbOperations
                     $stmt2->execute();
                     $stmt2->close();
 
-                    return 1;
+                    return ['status' => 1, 'new_reward' => $new_reward];
                } else {
                     $stmt->close();
-                    return 2;
+                    return ['status' => 2];
                }
           } else {
-               return 3;
+               return ['status' => 3];
           }
      }
+
 
      public function countWatched($uid)
      {
