@@ -6,7 +6,7 @@ $response = array();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-    echo ("hue");
+    echo ("hue123");
 
     $jsonStringEncoded = $_POST['encrypted'];
 
