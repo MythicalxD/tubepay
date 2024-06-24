@@ -275,7 +275,7 @@ class DbOperations
                ]
           ];
 
-          $stmt = $this->con->prepare("SELECT * FROM videos ORDER BY RAND() WHERE visibility = 1");
+          $stmt = $this->con->prepare("SELECT * FROM videos ORDER BY RAND() WHERE");
 
           if ($stmt->execute()) {
                $result = $stmt->get_result();
