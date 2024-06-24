@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $response['error'] = true;
         $response['message'] = "Request Packet Expired!";
         echo json_encode($response);
-        die();
+        // die();
     }
 
     if ($version != VERSION) {
