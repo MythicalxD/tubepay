@@ -828,7 +828,7 @@ class DbOperations
                $updateStatement = "UPDATE users SET points=points-?, payoutLock=? WHERE uid=?";
                $stmt = $this->con->prepare($updateStatement);
                $amt = $amount * 50000;
-               
+
                $lock = 0;
                if ($amount == "0.12") {
                     $lock = 1;
@@ -922,7 +922,7 @@ class DbOperations
           $stmt->bind_param("s", $uid);
           $stmt->execute();
           $stmt->store_result();
-          return $stmt->num_rows > 2;
+          return $stmt->num_rows > 3;
           // returns true if already claimed
      }
 
