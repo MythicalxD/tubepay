@@ -415,6 +415,17 @@ class DbOperations
 
      public function setAddSubs($uid, $name, $link, $clicks, $reward)
      {
+          // check validity
+
+          $pos = strpos($link, '.com/');
+          if ($pos !== false) {
+               // Check if the character right after '.com/' is '@'
+               if (isset($link[$pos + 5]) && $link[$pos + 5] !== '@') {
+                    return 4;
+               }
+          } else {
+               return 4;
+          }
           // check for balance
           $pointssub = $reward * $clicks;
           if ($this->checkpoints($uid, $pointssub)) {
