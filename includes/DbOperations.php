@@ -816,6 +816,10 @@ class DbOperations
      {
           if ($this->checkPayout($uid, $amount * 50000)) {
 
+               if ($country == "Please choose a country") {
+                    return ['code' => 103, 'message' => 'Please choose a country!'];
+               }
+
                if ($this->checkPayoutLock($uid, $amount, $method) == 1) {
                     return ['code' => 103, 'message' => 'PLEASE WAIT A FEW DAYS BEFORE SENDING THIS AMOUNT AGAIN'];
                }
