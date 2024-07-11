@@ -1,4 +1,7 @@
 <?php
+
+require_once '../../includes/DbOperations.php';
+
 /*Get query parameters*/
 $pub_id = $_REQUEST['pub_id'];
 $app_id = $_REQUEST['app_id'];
@@ -37,6 +40,13 @@ $generatedHash = hash_hmac("sha1", $urlWithoutHash, $secretKey);
 /*Check if the generated hash is the same as the "hash" query parameter*/
 if ($generatedHash == $hash) {
     /*Validation successful. Queue your user credit functions and send us postback received positive response*/
+
+    // Add txn_id
+    // Add points after conversion amount * 50k
+    // uid = user_id
+
+    $result = $db->addPointsOfferwall($uid, $txn_id, $amount);
+
     return 1;
 } else {
     /*Hash not equal. Send error response.

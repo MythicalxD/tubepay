@@ -195,6 +195,15 @@ class DbOperations
           return $stmt->num_rows > 0;
      }
 
+     public function checkTrxId($id)
+     {
+          $stmt = $this->con->prepare("SELECT * FROM notik WHERE trx=?");
+          $stmt->bind_param("s", $id);
+          $stmt->execute();
+          $stmt->store_result();
+          return $stmt->num_rows > 0;
+     }
+
      public function validate($hash)
      {
           $stmt = $this->con->prepare("SELECT * FROM requests WHERE reqs=?");
@@ -1067,6 +1076,28 @@ class DbOperations
 
           // Return the count
           return $count;
+     }
+
+     public function addPointsOfferwall($uid, $id, $amount)
+     {
+          if ($this->checkTrxId($id)) {
+               return 3;
+          }
+          // Execute the update query with a condition
+          $stmt = $this->con->prepare("INSERT INTO `notik` (`trx`, `amount`) VALUES (?, ?)");
+          $stmt->bind_param("si", $id, $amount);
+
+          if ($stmt->execute()) {
+               $stmt->close();
+               $stmt1 = $this->con->prepare("UPDATE users SET points = points + ?, offerwall = offerwall + ? WHERE `uid` = ?");
+               $stmt1->bind_param("iis", $amount, $amount, $uid);
+               $stmt1->execute();
+               $stmt1->close();
+               return 1;
+          }
+
+          $stmt->close();
+          return 2;
      }
 
 }
