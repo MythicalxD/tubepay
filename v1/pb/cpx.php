@@ -28,7 +28,7 @@ $hash = $_REQUEST['hash'];
 
 // Create validation signature
 $validation_signature = md5($trans_id . '-' . $secret_key);
-if ($secure_hash != $validation_signature) {
+if ($hash != $validation_signature) {
     // Signatures not equal - send error code
     echo 0;
     die();
