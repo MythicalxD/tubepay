@@ -1,5 +1,6 @@
 <?php
-
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
 require_once '../../includes/DbOperations.php';
 
 // Your secret key can be found in your apps section by clicking on the "Secret Key" button
