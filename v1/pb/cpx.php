@@ -35,7 +35,13 @@ if ($hash != $validation_signature) {
 }
 // Validation was successful. Credit user process.
 $db = new DbOperations();
-$result = $db->addPointsOfferwall($user_id, $trans_id, $amount_local);
+
+if ((int)$status == 2) {
+    $result = $db->removePointsOfferwall($user_id, $trans_id, $amount_local);
+} else {
+    $result = $db->addPointsOfferwall($user_id, $trans_id, $amount_local);
+}
+
 
 echo 1;
 die();

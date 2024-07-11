@@ -1084,8 +1084,8 @@ class DbOperations
                return 3;
           }
           // Execute the update query with a condition
-          $stmt = $this->con->prepare("INSERT INTO `notik` (`trx`, `amount`) VALUES (?, ?)");
-          $stmt->bind_param("si", $id, $amount);
+          $stmt = $this->con->prepare("INSERT INTO `notik` (`trx`, `amount`, `uid`) VALUES (?, ?, ?)");
+          $stmt->bind_param("sis", $id, $amount, $uid);
 
           if ($stmt->execute()) {
                $stmt->close();
@@ -1098,6 +1098,20 @@ class DbOperations
 
           $stmt->close();
           return 2;
+     }
+
+     public function removePointsOfferwall($uid, $id, $amount)
+     {
+          if ($this->checkTrxId($id)) {
+          } else {
+               return 3;
+          }
+
+          $stmt1 = $this->con->prepare("UPDATE users SET points = points - ?, offerwall = offerwall - ? WHERE `uid` = ?");
+          $stmt1->bind_param("iis", $amount, $amount, $uid);
+          $stmt1->execute();
+          $stmt1->close();
+          return 1;
      }
 
 }
