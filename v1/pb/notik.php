@@ -40,7 +40,7 @@ $generatedHash = hash_hmac("sha1", $urlWithoutHash, $secretKey);
 /*Check if the generated hash is the same as the "hash" query parameter*/
 if ($generatedHash == $hash) {
     /*Validation successful. Queue your user credit functions and send us postback received positive response*/
-
+    $db = new DbOperations();
     $result = $db->addPointsOfferwall($user_id, $txn_id, $amount);
 
     return 1;
