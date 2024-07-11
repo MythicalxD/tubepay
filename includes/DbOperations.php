@@ -596,6 +596,11 @@ class DbOperations
                          $taskID = 'tiktok';
                          break;
 
+                    case '9':
+                         $taskName = 'Follow Telegram';
+                         $taskID = 'telegram';
+                         break;
+
                     default:
                          return ['code' => 403, 'message' => 'INVALID TASK ID'];
                }
