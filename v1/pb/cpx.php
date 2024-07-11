@@ -23,7 +23,7 @@ $amount_local = $_REQUEST['amount_local'];
 $amount_usd = $_REQUEST['amount_usd'];
 $ip_click = $_REQUEST['ip_click'];
 $type = $_REQUEST['type'];
-$secure_hash = $_REQUEST['secure_hash'];
+$hash = $_REQUEST['hash'];
 
 
 // Create validation signature
