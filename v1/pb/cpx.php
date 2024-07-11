@@ -10,10 +10,10 @@ $allowed_ips = array(
     '188.40.3.73'
 );
 
-if (!in_array($_SERVER['REMOTE_ADDR'], $allowed_ips)) {
-    echo 0;
-    die();
-}
+// if (!in_array($_SERVER['REMOTE_ADDR'], $allowed_ips)) {
+//     echo 0;
+//     die();
+// }
 
 // Get parameters
 $status = $_REQUEST['status'];
