@@ -23,7 +23,6 @@ $user_id = $_REQUEST['user_id'];
 $amount_local = $_REQUEST['amount_local'];
 $amount_usd = $_REQUEST['amount_usd'];
 $ip_click = $_REQUEST['ip_click'];
-$type = $_REQUEST['type'];
 $hash = $_REQUEST['hash'];
 
 
