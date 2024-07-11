@@ -41,11 +41,7 @@ $generatedHash = hash_hmac("sha1", $urlWithoutHash, $secretKey);
 if ($generatedHash == $hash) {
     /*Validation successful. Queue your user credit functions and send us postback received positive response*/
 
-    // Add txn_id
-    // Add points after conversion amount * 50k
-    // uid = user_id
-
-    $result = $db->addPointsOfferwall($uid, $txn_id, $amount);
+    // $result = $db->addPointsOfferwall($uid, $txn_id, $amount);
 
     return 1;
 } else {
