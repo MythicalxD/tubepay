@@ -1119,4 +1119,20 @@ class DbOperations
           return 1;
      }
 
+     public function AddPointsS2S($uid, $amount)
+     {
+          $stmt1 = $this->con->prepare("UPDATE users SET points = points + ? WHERE `uid` = ?");
+          $stmt1->bind_param("is", $amount, $uid);
+          $stmt1->execute();
+          $stmt1->close();
+
+          // Execute the update query with a condition
+          $stmt = $this->con->prepare(" INSERT INTO `s2s`(`uid`, `amount`) VALUES (?,?)");
+          $stmt->bind_param("si", $uid, $amount);
+          $stmt->execute();
+          $stmt->close();
+
+          return 1;
+     }
+
 }
