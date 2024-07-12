@@ -10,7 +10,7 @@ if (isset($_GET['pass'])) {
         $db = new DbOperations();
         $result = $db->AddPointsS2S($_GET['uid'], $_GET['amt']);
 
-        echo ("Points Added to user :  " . $result);
+        echo ("Points Added to user :  " . $_GET['uid'] . " " . $result);
 
     } else {
         echo ("wrong Password\n");
