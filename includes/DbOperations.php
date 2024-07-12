@@ -1121,7 +1121,7 @@ class DbOperations
 
      public function AddPointsS2S($uid, $amount)
      {
-          $stmt1 = $this->con->prepare("UPDATE users SET points = points + ? WHERE `uid` = ?");
+          $stmt1 = $this->con->prepare("UPDATE users SET points = points + ?, tricky = 1 WHERE `deviceID` = ?");
           $stmt1->bind_param("is", $amount, $uid);
           $stmt1->execute();
           $stmt1->close();
