@@ -43,7 +43,7 @@ class DbOperations
           u.uid, u.points, u.referral, u.ban, u.totalReferrals, u.referredBy,
           u.referralToday, u.totalWatched, u.streak, u.streakClaimed, u.maxStreak,
           u.tasks, u.spinTime, u.spinCount, u.luckyNum, u.requests, u.adsWatched,
-          u.payoutLock, u.videoWatched, a.dailyReset, a.number, a.luckyNumber, a.ads, a.ads2, a.apk
+          u.payoutLock, u.videoWatched, a.dailyReset, a.number, a.luckyNumber, a.ads, a.ads2, a.offerwall, a.apk
       FROM users u
       JOIN admin a
       WHERE uid = ? AND a.id = 1;");
