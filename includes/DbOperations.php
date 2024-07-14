@@ -859,9 +859,6 @@ class DbOperations
                $amt = $amount * 50000;
 
                $lock = 0;
-               if ($amount == "0.12") {
-                    $lock = 1;
-               }
                if ($amount == "0.04") {
                     $lock = 1;
                }
