@@ -835,7 +835,7 @@ class DbOperations
                }
 
                if ($this->checkPayoutLock($uid, $amount, $method) == 1) {
-                    return ['code' => 103, 'message' => 'PLEASE WAIT A FEW DAYS BEFORE SENDING THIS AMOUNT AGAIN'];
+                    return ['code' => 103, 'message' => 'Bonus Payout already colleted!'];
                }
 
                if ($country == "India") {
