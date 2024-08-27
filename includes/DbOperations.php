@@ -275,12 +275,12 @@ class DbOperations
 
           $my_vid = [
                [
-                    'title' => 'Tubepay App - Promotion Video And Earn Money Free 2024',
-                    'description' => 'This Tubepay review will give you an inside look and show if you can get paid to watch YouTube videos 🔥.',
+                    'title' => 'Newspay - Watch and Earn | Free News | Get Free Cash 2024',
+                    'description' => 'This Newspay review will give you an inside look and show if you can get paid to read news and earn. 🔥.',
                     'videoID' => 0,
                     'uid' => 123,
                     'visibility' => 0,
-                    'link' => 'pSg274wpb5M'
+                    'link' => 'PtXrccavI-0'
                ]
           ];
 
